@@ -87,24 +87,31 @@ func addTwoNumbers2(l1 *ListNode, l2 *ListNode) *ListNode {
 //KMP
 //求每位上的最大一致前后缀
 func KMPHelp(arr []byte)  []int{
+	if len(arr)<2{
+		return []int{-1,0}
+	}
 	next := make([]int,len(arr))
 	index,i := 0,1
 	next[0] = -1
 	next[1] = 0
 	for i<len(arr)-1{
-		if arr[index] != arr[i]{
-			next[i+1] =0
+		if index == -1{
+			next[i+1] = 0
 			i++
-		}else {
-			next[i+1] = next[i]+1
+			index = 0
+		}else if arr[index] == arr[i]{
+			next[i+1] = index+1
 			index++
 			i++
+		}else {
+			index = next[index]
 		}
 	}
+	fmt.Println(next)
 	return next
 }
 
-func KMP(s string,aim string) bool {
+func KMP(s string,aim string) int {
 	sArr := []byte(s)
 	aimArr := []byte(aim)
 	next := KMPHelp(aimArr)
@@ -122,11 +129,10 @@ func KMP(s string,aim string) bool {
 		}
 	}
 	if j==len(aimArr) && i<=len(sArr){
-		return true
+		return i-j
 	}
-	return false
+	return -1
 }
-
 //无重复字符的最长字串
 func lengthOfLongestSubstring(s string) int {
 	arr := []byte(s)
